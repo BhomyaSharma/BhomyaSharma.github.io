@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paula — AI Support Chatbot | Case Study by Bhomya Sharma</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F6F7F4;
+    --surface:#FFFFFF;
+    --surface-2:#EEF1EC;
+    --ink:#13181A;
+    --ink-muted:#5B6660;
+    --ink-faint:#8A948D;
+    --line:#DFE4DE;
+    --accent:#276A4E;
+    --accent-soft:#E1EFE6;
+    --accent-ink:#FFFFFF;
+    --chip-blue:#2F5A8A;
+    --chip-blue-soft:#E7EEF6;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',-apple-system,sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:'Newsreader',serif;font-weight:500;margin:0;text-wrap:balance;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  a{color:var(--accent);}
+
+  .wrap{max-width:920px;margin:0 auto;padding:0 28px;}
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    border-bottom:1px solid var(--line);
+    padding:18px 0;
+    background:var(--surface);
+  }
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;}
+  .brand{display:flex;align-items:center;gap:9px;font-weight:600;font-size:14.5px;}
+  .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--accent);}
+  .topnav{display:flex;gap:22px;font-size:13.5px;color:var(--ink-muted);}
+  .topnav a{color:var(--ink-muted);text-decoration:none;}
+  .topnav a:hover{color:var(--ink);}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:64px 0 40px;}
+  .eyebrow{
+    font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);
+    font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px;
+  }
+  .eyebrow::before{content:"";width:20px;height:1px;background:var(--accent);}
+  .hero h1{font-size:44px;line-height:1.12;letter-spacing:-.01em;max-width:14ch;}
+  .hero .sub{font-size:17px;color:var(--ink-muted);max-width:56ch;margin-top:18px;}
+  .hero .byline{margin-top:26px;font-size:13.5px;color:var(--ink-faint);}
+  .hero .byline b{color:var(--ink);font-weight:600;}
+
+  .stat-row{
+    display:grid;grid-template-columns:repeat(3,1fr);
+    gap:1px;background:var(--line);
+    border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
+    margin-top:40px;
+  }
+  .stat{background:var(--surface);padding:22px 20px;}
+  .stat .num{font-family:'Newsreader',serif;font-size:32px;color:var(--accent);font-weight:500;}
+  .stat .lbl{font-size:12.5px;color:var(--ink-muted);margin-top:4px;}
+
+  /* ---------- Chat mock (signature element) ---------- */
+  .chat-demo{
+    margin-top:48px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    overflow:hidden;
+    box-shadow:0 1px 2px rgba(20,30,25,.04), 0 12px 32px rgba(20,30,25,.06);
+  }
+  .chat-demo .cd-head{
+    display:flex;align-items:center;gap:10px;
+    padding:14px 18px;border-bottom:1px solid var(--line);background:var(--surface-2);
+  }
+  .cd-head .av{width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;font-family:'Newsreader',serif;}
+  .cd-head .who{font-size:13.5px;font-weight:600;}
+  .cd-head .status{margin-left:auto;font-size:11.5px;color:var(--accent);display:flex;align-items:center;gap:6px;}
+  .cd-head .status .d{width:6px;height:6px;border-radius:50%;background:var(--accent);}
+  .cd-body{padding:22px 18px;display:flex;flex-direction:column;gap:14px;}
+  .bubble{max-width:72%;padding:10px 14px;border-radius:14px;font-size:14px;}
+  .bubble.user{align-self:flex-end;background:var(--ink);color:#fff;border-bottom-right-radius:4px;}
+  .bubble.bot{align-self:flex-start;background:var(--surface-2);color:var(--ink);border-bottom-left-radius:4px;}
+  .bubble.bot .src{display:block;margin-top:8px;font-size:11px;color:var(--ink-faint);}
+  .typing{align-self:flex-start;display:flex;gap:4px;padding:10px 14px;}
+  .typing span{width:6px;height:6px;border-radius:50%;background:var(--ink-faint);opacity:.5;animation:blink 1.2s infinite;}
+  .typing span:nth-child(2){animation-delay:.2s;}
+  .typing span:nth-child(3){animation-delay:.4s;}
+  @keyframes blink{0%,80%,100%{opacity:.3;}40%{opacity:1;}}
+  @media (prefers-reduced-motion: reduce){.typing span{animation:none;opacity:.7;}}
+
+  /* ---------- Sections ---------- */
+  section{padding:52px 0;border-top:1px solid var(--line);}
+  .section-head{display:flex;gap:16px;align-items:baseline;margin-bottom:26px;}
+  .section-num{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--accent);}
+  section h2{font-size:26px;}
+  .lede{font-size:15.5px;color:var(--ink-muted);max-width:62ch;margin-bottom:28px;}
+
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:28px;}
+  @media (max-width:720px){.two-col{grid-template-columns:1fr;}}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;}
+  .card h3{font-size:16px;margin-bottom:10px;}
+  .card p{font-size:14px;color:var(--ink-muted);margin:0;}
+
+  .steps{display:flex;flex-direction:column;gap:0;}
+  .step{display:grid;grid-template-columns:44px 1fr;gap:18px;padding:20px 0;border-top:1px solid var(--line);}
+  .step:first-child{border-top:none;}
+  .step .n{font-family:'Newsreader',serif;font-size:20px;color:var(--accent);}
+  .step h3{font-size:15.5px;margin-bottom:6px;}
+  .step p{font-size:14px;color:var(--ink-muted);margin:0;max-width:60ch;}
+
+  figure{margin:0;}
+  .shot{
+    border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
+    box-shadow:0 1px 2px rgba(20,30,25,.04), 0 10px 26px rgba(20,30,25,.05);
+  }
+  .shot img{display:block;width:100%;height:auto;}
+  figcaption{font-size:12.5px;color:var(--ink-faint);margin-top:10px;}
+
+  .tag-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;}
+  .tag{font-size:12px;padding:5px 11px;border-radius:99px;background:var(--surface-2);color:var(--ink-muted);border:1px solid var(--line);font-family:'JetBrains Mono',monospace;}
+
+  .pill{
+    display:inline-flex;align-items:center;gap:6px;
+    background:var(--chip-blue-soft);color:var(--chip-blue);
+    font-size:12px;font-weight:600;padding:4px 10px;border-radius:99px;
+  }
+
+  footer{padding:44px 0 60px;text-align:center;}
+  footer .sub{font-size:13.5px;color:var(--ink-faint);margin-top:8px;}
+  .cta{
+    display:inline-flex;align-items:center;gap:8px;
+    margin-top:18px;padding:11px 20px;border-radius:99px;
+    background:var(--ink);color:#fff;text-decoration:none;font-size:13.5px;font-weight:600;
+  }
+</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="wrap">
+      <div class="brand"><span class="dot"></span> Paula — Case Study</div>
+      <div class="topnav">
+        <a href="#build">The Build</a>
+        <a href="#setup">Setup</a>
+        <a href="#results">Results</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <section class="hero" style="border-top:none;padding-bottom:0;">
+      <div class="eyebrow">AI Customer Support · Live in Production</div>
+      <h1>Paula: an AI chatbot that resolves 45% of customer queries on its own</h1>
+      <p class="sub">A knowledge-grounded support agent I built and deployed on a live B2B SaaS platform — from a 300+ article knowledge base to a real-time Slack escalation pipeline.</p>
+      <div class="byline">Built by <b>Bhomya Sharma</b> · Associate Product Manager, Sprouts.ai · 2026</div>
+
+      <div class="stat-row">
+        <div class="stat"><div class="num">45%</div><div class="lbl">Queries auto-resolved, no CS needed</div></div>
+        <div class="stat"><div class="num">300+</div><div class="lbl">Knowledge base articles integrated</div></div>
+        <div class="stat"><div class="num">&lt;10s</div><div class="lbl">Typical first-response time</div></div>
+      </div>
+
+      <div class="chat-demo">
+        <div class="cd-head">
+          <div class="av">P</div>
+          <div class="who">Paula</div>
+          <div class="status"><span class="d"></span> Online</div>
+        </div>
+        <div class="cd-body">
+          <div class="bubble user">Hey, I can't figure out how to enrich contacts in bulk — is that possible?</div>
+          <div class="bubble bot">Yes — select the rows you want, then use the <b>Enrich</b> action at the top of the table. It pulls email + phone via waterfall enrichment for everyone selected at once.
+            <span class="src">Answered from: Knowledge Base → Qualify &amp; Enrich</span>
+          </div>
+          <div class="bubble user">Perfect, that worked. Thanks!</div>
+          <div class="typing"><span></span><span></span><span></span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="build">
+      <div class="section-head"><span class="section-num">01</span><h2>Why I built it</h2></div>
+      <p class="lede">Support volume was growing faster than the CS team could scale, and most incoming questions were repeat, answerable-from-docs questions — not things that needed a human. I owned this end to end: scoping it, building the knowledge layer, testing it against real queries, and shipping it into production.</p>
+      <div class="two-col">
+        <div class="card">
+          <h3>The problem</h3>
+          <p>CS was spending most of its time on questions that were already answered somewhere in our docs — slow for customers, repetitive for the team, and a poor use of human judgment.</p>
+        </div>
+        <div class="card">
+          <h3>The approach</h3>
+          <p>Ground an AI agent in a maintained knowledge base, deploy it where customers already ask questions (Intercom), and route anything it can't confidently answer straight to the right human, fast.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="setup">
+      <div class="section-head"><span class="section-num">02</span><h2>How it works</h2></div>
+      <p class="lede">Four pieces had to come together for Paula to answer reliably and hand off cleanly when it couldn't.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="n">1</div>
+          <div><h3>Knowledge base ingestion</h3><p>Structured and synced 300+ support articles (public docs, internal notes, and snippets) so Paula always answers from current, approved content — not a generic model guess.</p></div>
+        </div>
+        <div class="step">
+          <div class="n">2</div>
+          <div><h3>Channel deployment</h3><p>Deployed Paula inside Intercom, the same place customers already message support, so there was zero new habit for anyone to learn.</p></div>
+        </div>
+        <div class="step">
+          <div class="n">3</div>
+          <div><h3>Confidence-based handoff</h3><p>Built a real-time Slack alert pipeline — customer name, assigned rep, and the query itself — so anything Paula can't confidently resolve reaches a human immediately, with full context.</p></div>
+        </div>
+        <div class="step">
+          <div class="n">4</div>
+          <div><h3>UAT and tuning</h3><p>Ran structured testing against real historical queries, flagged wrong or low-confidence answers, and iterated on the knowledge base until accuracy held up under live traffic.</p></div>
+        </div>
+      </div>
+
+      <figure class="shot" style="margin-top:34px;">
+        <img src="paula-kb-screenshot.jpg" alt="Intercom knowledge base dashboard showing 341 live articles synced across Copilot, Service, Sales, and Ecommerce channels" loading="lazy">
+      </figure>
+      <figcaption>The knowledge base console — 341 live articles synced across every channel Paula operates in.</figcaption>
+
+      <div class="tag-row">
+        <span class="tag">Intercom</span>
+        <span class="tag">Knowledge Base</span>
+        <span class="tag">Slack API</span>
+        <span class="tag">Prompt Engineering</span>
+        <span class="tag">UAT</span>
+      </div>
+    </section>
+
+    <section id="results">
+      <div class="section-head"><span class="section-num">03</span><h2>Impact</h2></div>
+      <div class="two-col">
+        <div class="card">
+          <h3><span class="pill">↓ Support load</span></h3>
+          <p style="margin-top:12px;">45% of incoming queries are now resolved without any CS involvement, freeing the team to focus on the questions that actually need a human.</p>
+        </div>
+        <div class="card">
+          <h3><span class="pill">↑ Product insight</span></h3>
+          <p style="margin-top:12px;">Recurring query patterns surfaced real customer pain points and knowledge gaps, which fed directly back into the product roadmap.</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <div class="wrap">
+      <div style="font-family:'Newsreader',serif;font-size:20px;">Bhomya Sharma</div>
+      <div class="sub">Associate Product Manager · B2B SaaS · AI &amp; LLM Products</div>
+      <a class="cta" href="https://linkedin.com/in/bhomya-sharma-29843a330">View LinkedIn ↗</a>
+    </div>
+  </footer>
+
+</body>
+</html>
